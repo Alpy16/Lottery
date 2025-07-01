@@ -1,0 +1,9 @@
+forge-std/=lib/forge-std/src/
+foundry-devops/=lib/foundry-devops/src/
+chainlink-brownie-contracts/=lib/chainlink-brownie-contracts/contracts/
+solmate/=lib/solmate/src/
+chainlink/=lib/chainlink/
+ds-test/=lib/solmate/lib/ds-test/src/
+weird-erc20/=lib/solmate/lib/weird-erc20/src/
+@solmate/=lib/solmate/src
+@openzeppelin/=lib/openzeppelin-contracts/
