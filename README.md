@@ -3,89 +3,114 @@
 [![Forged with Foundry](https://img.shields.io/badge/forged%20with-foundry-blue.svg?style=flat-square&logo=foundry)](https://book.getfoundry.sh/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
+A decentralized smart contract lottery using Chainlink VRF v2+ and Chainlink Automation, built and tested with Foundry.
 
-This is a decentralized, verifiably fair lottery system built using Solidity, Foundry, and Chainlink VRF V2 Plus. Participants enter by paying an ETH fee, and after a set time interval, a random winner is chosen using Chainlink's verifiable randomness.
+---
 
-## What This Is
+## Quick Start
 
-A complete, test-driven smart contract lottery project compatible with Chainlink VRF V2 Plus, including:
-- Local + staging testing
-- Custom error handling
-- Fully automated upkeep logic
-- Chainlink mock support for local development
-
-## Why I Migrated to Chainlink VRF V2 Plus
-
-The original Cyfrin Updraft project used Chainlink VRF V2, which is now deprecated. I upgraded this project to VRF V2 Plus for:
-- Better network availability and reliability
-- Support for native token payment (optional)
-- Newer, struct-based API format for randomness requests
-- Long-term compatibility with Chainlink tooling
-
-To reflect those improvements, I updated the codebase to use:
-- `VRFConsumerBaseV2Plus` as the base contract
-- `VRFCoordinatorV2PlusMock` for local tests
-- `VRFV2PlusClient` to build request parameters
-
-## Project Structure
-
-foundry-smart-contract-lottery-f23/  
-├── src/  
-│   └── Raffle.sol  
-├── script/  
-│   ├── DeployRaffle.s.sol  
-│   └── HelperConfig.s.sol  
-├── test/  
-│   ├── unit/  
-│   │   └── RaffleTest.t.sol  
-│   └── staging/  
-│       └── RaffleStagingTest.t.sol  
-├── lib/  
-├── foundry.toml  
-└── README.md
-
-## Key Changes I Made
-
-| Area              | Update                                                                  |
-|-------------------|--------------------------------------------------------------------------|
-| Chainlink Version | Migrated from VRF V2 to VRF V2 Plus                                      |
-| Mocks             | Replaced with `VRFCoordinatorV2PlusMock`                                 |
-| Consumer Contract | Uses `VRFConsumerBaseV2Plus` and `VRFV2PlusClient`                       |
-| Randomness Call   | Switched to struct-based `requestRandomWords()` with `extraArgs`         |
-| Errors            | Refactored to `Raffle__ErrorName()` style for clearer debugging          |
-| Events            | Indexed `requestId` for improved log inspection                          |
-| Tests             | Adjusted to new randomness pipeline and local VRF mocking behavior       |
-
-## Chainlink Automation Support
-
-This project includes full Chainlink Automation (Keepers) compatibility:
-
-- `checkUpkeep()` checks if the raffle should run (time passed, players exist, contract funded)
-- `performUpkeep()` requests randomness and transitions state from OPEN → CALCULATING
-
-## How to Run the Tests
+### 1. Clone and Install
 
 ```bash
+git clone https://github.com/Alpy16/foundry-smart-contract-lottery-f23.git
+cd foundry-smart-contract-lottery-f23
 forge install
+```
+
+### 2. Build Contracts
+
+```bash
 forge build
+```
+
+### 3. Run Tests
+
+```bash
 forge test
 ```
 
-You should see all 16 tests passing.
+### 4. Deploy Locally (Anvil)
 
-### Test Files
+```bash
+anvil
+```
 
-- `test/unit/RaffleTest.t.sol` — core unit testing with mocks
-- `test/staging/RaffleStagingTest.t.sol` — staging tests verifying full random winner logic
+In a separate terminal:
 
-## Prerequisites
+```bash
+forge script script/DeployRaffle.s.sol --rpc-url http://localhost:8545 --broadcast -vvvv
+```
 
-- Foundry (`foundryup`)
-- Chainlink contracts (installed via `forge install` or as submodule)
-- Optional: `.env` and RPC setup if deploying to real networks
+---
 
-## Credits
+## Project Structure
 
-- Based on the Cyfrin Updraft Course by PatrickAlphaC
-- Upgraded and maintained to support Chainlink’s VRF V2 Plus by me
-# foundry-smart-contract-lottery-f23
+```
+foundry-smart-contract-lottery-f23/
+├── src/                # Raffle.sol contract
+├── script/             # Deploy & helper scripts
+├── test/               # Unit & staging tests
+├── lib/                # Dependencies
+├── foundry.toml        # Project config
+└── README.md
+```
+
+---
+
+## What I Changed and Why
+
+I took the original Chainlink VRF V2-based raffle implementation and upgraded it to use Chainlink VRF V2 Plus. This required changing the core consumer contract to inherit from `VRFConsumerBaseV2Plus` and use the new `requestRandomWords()` function with structured `extraArgs`.
+
+I also updated the mock system from `VRFCoordinatorV2Mock` to `VRFCoordinatorV2PlusMock` so tests could be run in a local Anvil environment using the new VRF Plus infrastructure.
+
+To align the tests with the new setup, I rewrote the unit and staging test logic to handle the updated request/response pattern, log structure, and mock compatibility. This ensures full local coverage and staging realism with deterministic randomness and request ID tracking.
+
+---
+
+## Key Changes in This Fork
+
+| Area              | Update                                                                 |
+|-------------------|------------------------------------------------------------------------|
+| Chainlink Version | I migrated from VRF v2 to VRF v2 Plus                                   |
+| Mocks             | I replaced the old mock with `VRFCoordinatorV2PlusMock`                 |
+| Consumer Contract | I updated to use `VRFConsumerBaseV2Plus` and `VRFV2PlusClient`         |
+| Randomness Call   | I switched to struct-based `requestRandomWords()` with `extraArgs`     |
+| Errors            | I renamed them to `Raffle__ErrorName()` for clearer traceability       |
+| Events            | I indexed the `requestId` for better test access and filtering         |
+| Tests             | I refactored tests to match the updated VRF pipeline and log structure |
+
+---
+
+## Environment Setup
+
+Create a `.env` file:
+
+```dotenv
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-api-key
+PRIVATE_KEY=your-private-key
+ETHERSCAN_API_KEY=your-etherscan-key
+```
+
+Access these in scripts with Foundry’s `vm.envString()`.
+
+---
+
+## Test Commands
+
+- Unit Tests: `forge test`
+- Staging (VRF) Tests: `forge test --match-path test/staging/*`
+- Fork Testing: Add a `FOUNDRY_PROFILE=fork` and configure it in `foundry.toml`
+
+---
+
+## Resources
+
+- [Foundry Book](https://book.getfoundry.sh/)
+- [Chainlink VRF v2 Plus](https://docs.chain.link/vrf/v2-5/)
+- [Cyfrin Foundry Course](https://github.com/Cyfrin/foundry-full-course-f23)
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
