@@ -1,4 +1,8 @@
-# Foundry Smart Contract Lottery (Chainlink VRF V2 Plus Edition)
+# Alpy Raffle — Smart Contract Lottery with Chainlink VRF V2 Plus
+
+[![Forged with Foundry](https://img.shields.io/badge/forged%20with-foundry-blue.svg?style=flat-square&logo=foundry)](https://book.getfoundry.sh/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 
 This is a decentralized, verifiably fair lottery system built using Solidity, Foundry, and Chainlink VRF V2 Plus. Participants enter by paying an ETH fee, and after a set time interval, a random winner is chosen using Chainlink's verifiable randomness.
 
