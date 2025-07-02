@@ -59,11 +59,13 @@ foundry-smart-contract-lottery-f23/
 
 ## What I Changed and Why
 
-I took the original Chainlink VRF V2-based raffle implementation and upgraded it to use Chainlink VRF V2 Plus. This required changing the core consumer contract to inherit from `VRFConsumerBaseV2Plus` and use the new `requestRandomWords()` function with structured `extraArgs`.
+This project is a fork of the original Cyfrin Updraft Lottery using Foundry, but adapted to work with Chainlink VRF V2 Plus. I made the following key updates:
 
-I also updated the mock system from `VRFCoordinatorV2Mock` to `VRFCoordinatorV2PlusMock` so tests could be run in a local Anvil environment using the new VRF Plus infrastructure.
-
-To align the tests with the new setup, I rewrote the unit and staging test logic to handle the updated request/response pattern, log structure, and mock compatibility. This ensures full local coverage and staging realism with deterministic randomness and request ID tracking.
+- Migrated from `VRFCoordinatorV2Mock` to `VRFCoordinatorV2PlusMock` for compatibility with Chainlink’s newer randomness infrastructure.
+- Refactored the consumer contract to inherit from `VRFConsumerBaseV2Plus` and use the newer `requestRandomWords` API structure with `extraArgs`.
+- Updated the error names in the Raffle contract to follow the `Raffle__ErrorName()` pattern, which improves readability and test traceability.
+- Removed `console.log` and `console2.log` statements to clean up test output and reduce unnecessary gas usage.
+- Adjusted the test cases and log expectations to reflect how VRF V2 Plus structures request IDs and responses differently than V2.
 
 ---
 
