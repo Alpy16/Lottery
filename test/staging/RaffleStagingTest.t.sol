@@ -5,7 +5,7 @@ pragma solidity ^0.8.19;
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
-import {Test, console} from "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
 import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
@@ -44,7 +44,6 @@ contract RaffleTest is StdCheats, Test {
         vrfCoordinatorV2_5 = config.vrfCoordinatorV2_5;
     }
 
-  
     modifier raffleEntered() {
         vm.prank(PLAYER);
         raffle.enterRaffle{value: raffleEntranceFee}();

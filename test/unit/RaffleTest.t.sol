@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
-import {Test, console2} from "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "../mocks/LinkToken.sol";
@@ -134,14 +134,7 @@ contract RaffleTest is Test, CodeConstants {
 
     function testPerformUpkeepRevertsIfCheckUpkeepIsFalse() public {
         Raffle.RaffleState rState = raffle.getRaffleState();
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Raffle.Raffle__UpkeepNotNeeded.selector,
-                0,
-                0,
-                uint256(rState)
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(Raffle.Raffle__UpkeepNotNeeded.selector, 0, 0, uint256(rState)));
         raffle.performUpkeep("");
     }
 

@@ -60,10 +60,8 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
 
     function checkUpkeep(bytes memory) public view override returns (bool upkeepNeeded, bytes memory) {
         upkeepNeeded = (
-            s_raffleState == RaffleState.OPEN &&
-            (block.timestamp - s_lastTimeStamp) > i_interval &&
-            address(this).balance > 0 &&
-            s_players.length > 0
+            s_raffleState == RaffleState.OPEN && (block.timestamp - s_lastTimeStamp) > i_interval
+                && address(this).balance > 0 && s_players.length > 0
         );
         return (upkeepNeeded, "");
     }
